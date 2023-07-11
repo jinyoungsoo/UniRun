@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public static partial class GFunc
 {
@@ -10,17 +11,30 @@ public static partial class GFunc
     public static void Log(object message)
     {
 #if DEBUG_MODE
-        Debug.Log(message);                              //디파인 심볼?
+        Debug.Log(message);                              //디파인 심볼
 #endif
     }
 
     [System.Diagnostics.Conditional("DEBUG_MODE")]
     public static void Assert(bool condition)
     {
+
 #if DEBUG_MODE
         Debug.Assert(condition);
 #endif
     }
+
+    [System.Diagnostics.Conditional("DEBUG_MODE")]
+    public static void LogWarning(object message)
+    {
+#if DEBUG_MODE
+        Debug.LogWarning(message);                              
+#endif
+    }
+
+
+
+
 
     //! Gameobject 받아서 Text 컴포넌트 찾아서 text 필드 값 수정하는 함수
     public static void SetText(this GameObject target, string text)
@@ -36,6 +50,15 @@ public static partial class GFunc
     {
         SceneManager.LoadScene(sceneName);
     }
+
+
+    //! 현재 씬의 이름을 리턴한다                            
+    public static string GetAcriveSceneName()
+    {
+        return SceneManager.GetActiveScene().name;
+    }
+
+
     
     //backgroundloop 랩핑
     //! 두 백터를 더한다             
@@ -45,4 +68,26 @@ public static partial class GFunc
         result += addVector;
         return result;
     }
+
+
+
+    //!컴포넌트가 존재하는지 여부를 체크하는 함수
+    public static bool IsValid<T>(this T target) where T : Component       //transform 등 다 쓸 수 있게 제한 걸어주기 위해서 where T : Component 씀
+    {
+        if(target == null || target == default) { return false; }
+        else { return true;  }
+
+        
+    }
+
+    //!리스트가 유효한지 여부를 체크하는 함수
+    public static bool IsValid<T>(this List<T> target) 
+    {
+        bool isInvalid = (target == null || target == default);
+        isInvalid = isInvalid || target.Count == 0;
+
+        if (isInvalid == true) { return false; }
+        else { return true; }
+    }
+
 }

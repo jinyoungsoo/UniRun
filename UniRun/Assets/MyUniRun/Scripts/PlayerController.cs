@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private AudioSource playerAudio = default;
 
 
+    
+
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +59,9 @@ public class PlayerController : MonoBehaviour
 
         playerRigid.velocity = Vector2.zero;
         isDead = true;
+
+        GameManager.Instance.OnPlayerDead();
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -64,6 +69,17 @@ public class PlayerController : MonoBehaviour
         if (collision.tag.Equals("Dead") && isDead == false)
         {
             Die();
+        }
+
+        if(collision.tag.Equals("Coin"))
+        {
+            GameManager.Instance.AddScore(5);
+            
+        }
+
+        if(collision.tag.Equals("Chest"))
+        {
+            this.transform.localScale += new Vector3(2f, 2f, 0);
         }
     }
 
@@ -74,12 +90,16 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
             jumpCount = 0;
         }
+
+       
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         isGrounded = false;
     }
+
+    
 }
 
   
